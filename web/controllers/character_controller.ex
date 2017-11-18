@@ -10,8 +10,8 @@ defmodule EdgeBuilder.CharacterController do
   alias EdgeBuilder.Models.ForcePower
   alias EdgeBuilder.Models.ForcePowerUpgrade
   alias EdgeBuilder.Repo
+  alias EdgeBuilder.Repositories.CharacterRepo
   alias EdgeBuilder.Changemap
-  import Ecto.Query, only: [from: 2]
 
   plug Plug.Authentication, except: [:show, :index]
 
@@ -46,7 +46,7 @@ defmodule EdgeBuilder.CharacterController do
   end
 
   def index(conn, params) do
-    page = Repo.paginate((from c in Character, order_by: [desc: c.inserted_at]), page: params["page"])
+    page = EdgeBuilder.Repositories.CharacterRepo.all(params["page"])
 
     render conn, :index,
       title: "Characters",
@@ -56,7 +56,7 @@ defmodule EdgeBuilder.CharacterController do
   end
 
   def show(conn, %{"id" => id}) do
-    character = Character.full_character(id)
+    character = CharacterRepo.full_character(id)
     user = Repo.get!(User, character.user_id)
 
     render conn, :show,
@@ -73,7 +73,7 @@ defmodule EdgeBuilder.CharacterController do
   end
 
   def edit(conn, %{"id" => id}) do
-    character = Character.full_character(id)
+    character = CharacterRepo.full_character(id)
 
     if !is_owner?(conn, character) do
       redirect conn, to: "/"
@@ -88,7 +88,7 @@ defmodule EdgeBuilder.CharacterController do
   end
 
   def update(conn, params = %{"id" => id, "character" => character_params}) do
-    character = Character.full_character(id)
+    character = CharacterRepo.full_character(id)
 
     if !is_owner?(conn, character) do
       redirect conn, to: "/"
@@ -106,7 +106,7 @@ defmodule EdgeBuilder.CharacterController do
         |> Changemap.apply_changes
         |> Changemap.delete_missing
 
-        redirect conn, to: character_path(conn, :show, changemap.root.model)
+        redirect conn, to: character_path(conn, :show, changemap.root.data)
       else
         render_edit conn,
           character: changemap.root,
@@ -119,7 +119,7 @@ defmodule EdgeBuilder.CharacterController do
   end
 
   def delete(conn, %{"id" => id}) do
-    character = Character.full_character(id)
+    character = CharacterRepo.full_character(id)
 
     if !is_owner?(conn, character) do
       redirect conn, to: "/"
@@ -178,10 +178,9 @@ defmodule EdgeBuilder.CharacterController do
   defp force_power_changesets(_,_), do: []
 
   defp with_upgrades(force_power, upgrade_params) do
-    if Ecto.Changeset.get_field(force_power, :force_power_upgrades) |> Ecto.Association.loaded? do
-      instances = Ecto.Changeset.get_field(force_power, :force_power_upgrades)
-    else
-      instances = []
+    instances = case Ecto.Changeset.get_field(force_power, :force_power_upgrades) do
+      %Ecto.Association.NotLoaded{} -> []
+      upgrades -> upgrades
     end
 
     %{root: force_power,
@@ -206,8 +205,10 @@ defmodule EdgeBuilder.CharacterController do
   defp character_skill_changesets(_,_), do: []
 
   defp to_force_power_changeset(force_power) do
-    if Enum.empty?(force_power.force_power_upgrades) do
-      force_power = Map.put(force_power, :force_power_upgrades, [%ForcePowerUpgrade{}])
+    force_power = if Enum.empty?(force_power.force_power_upgrades) do
+      Map.put(force_power, :force_power_upgrades, [%ForcePowerUpgrade{}])
+    else
+      force_power
     end
 
     force_power
@@ -219,8 +220,8 @@ defmodule EdgeBuilder.CharacterController do
     %{username: username} = user
     %{name: name, species: species, specializations: specializations, career: career, background: bg} = character
     "#{name} is #{a_or_an(species)} #{species} #{career} created by #{username} specializing in #{specializations}. #{bg}"
-    |> String.strip()
-    |> String.replace ~r/[\s\n\r]+/, " "
+    |> String.trim()
+    |> String.replace(~r/[\s\n\r]+/, " ")
   end
 
   defp a_or_an(word) do

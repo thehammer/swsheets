@@ -2,14 +2,13 @@ defmodule EdgeBuilder.PageController do
   use EdgeBuilder.Web, :controller
 
   alias EdgeBuilder.Models.User
-  alias EdgeBuilder.Models.Character
   alias EdgeBuilder.Models.Vehicle
   alias EdgeBuilder.Repo
   import Ecto.Query, only: [from: 2]
 
   def index(conn, _params) do
-    characters = Repo.all(from c in Character, order_by: [desc: :inserted_at], limit: 5)
-    vehicles = Repo.all(from c in Vehicle, order_by: [desc: :inserted_at], limit: 5)
+    characters = EdgeBuilder.Repositories.CharacterRepo.recent()
+    vehicles = Repo.all(from c in Vehicle, order_by: [desc: :inserted_at], limit: 5) |> Enum.map(&Vehicle.set_permalink/1)
 
     render conn, :index,
       contributors: User.contributors(5),
