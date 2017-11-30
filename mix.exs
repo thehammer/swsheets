@@ -27,21 +27,24 @@ defmodule EdgeBuilder.Mixfile do
   #
   # Type `mix help deps` for examples and options
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:plug, "~>1.3.5", override: true},
-     {:postgrex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:gettext, "~> 0.11"},
-     {:ex_spec, "~> 2.0", only: :test},
-     {:cowboy, ">= 0.0.0"},
-     {:scrivener_ecto, "~> 1.0"},
-     {:comeonin, "~> 3.2"},
-     {:httpoison, "~> 0.12"},
-     {:inflex, "~> 1.8" },
-     {:mock, "~> 0.2", only: :test},
-     {:floki, "~> 0.17", only: :test}]
+    [
+      {:comeonin, "~> 3.2"},
+      {:cowboy, "~> 1.1.2"},
+      {:ex_spec, "~> 2.0.1", only: :test},
+      {:floki, "~> 0.19", only: :test},
+      {:gettext, "~> 0.13.1"},
+      {:httpoison, "~> 0.13.0"},
+      {:inflex, "~> 1.9.0" },
+      {:mock, "~> 0.3.1", only: :test},
+      {:phoenix, "~> 1.3.0"},
+      {:phoenix_ecto, "~> 3.3.0"},
+      {:phoenix_html, "~> 2.10.5"},
+      {:phoenix_live_reload, "~> 1.1.3"},
+      {:phoenix_pubsub, "~> 1.0.2"},
+      {:plug, "~>1.4.3"},
+      {:postgrex, "~> 0.13.3"},
+      {:scrivener_ecto, "~> 1.3.0"},
+    ]
   end
 
   defp aliases do

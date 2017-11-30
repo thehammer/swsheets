@@ -1,8 +1,7 @@
 defmodule EdgeBuilder.Models.Vehicle do
   use EdgeBuilder.Web, :model
 
-  alias EdgeBuilder.Models.VehicleAttack
-  alias EdgeBuilder.Models.VehicleAttachment
+  alias EdgeBuilder.Models.{User,VehicleAttack,VehicleAttachment}
 
   @derive {Phoenix.Param, key: :permalink}
   schema "vehicles" do

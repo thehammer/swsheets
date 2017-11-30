@@ -9,8 +9,8 @@ defmodule EdgeBuilder.Models.User do
     field :crypted_password, :binary
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
-    field :bug_reported_at, Ecto.DateTime
-    field :pull_requested_at, Ecto.DateTime
+    field :bug_reported_at, :naive_datetime
+    field :pull_requested_at, :naive_datetime
 
     timestamps()
   end

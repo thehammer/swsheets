@@ -1,11 +1,7 @@
 defmodule EdgeBuilder.Models.Character do
   use EdgeBuilder.Web, :model
 
-  alias EdgeBuilder.Models.Talent
-  alias EdgeBuilder.Models.Talent
-  alias EdgeBuilder.Models.Attack
-  alias EdgeBuilder.Models.CharacterSkill
-  alias EdgeBuilder.Models.ForcePower
+  alias EdgeBuilder.Models.{Attack,CharacterSkill,ForcePower,Talent,User}
 
   @derive {Phoenix.Param, key: :permalink}
   schema "characters" do
