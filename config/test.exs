@@ -15,5 +15,5 @@ config :edge_builder, EdgeBuilder.Repo,
   database: "edgebuilder_test",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :comeonin,
-  bcrypt_log_rounds: 4 #minimum number of brypt rounds
+config :bcrypt_elixir,
+  log_rounds: 4 #minimum number of bcrypt rounds

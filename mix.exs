@@ -28,7 +28,8 @@ defmodule EdgeBuilder.Mixfile do
   # Type `mix help deps` for examples and options
   defp deps do
     [
-      {:comeonin, "~> 3.2"},
+      {:bcrypt_elixir, "~> 1.0.5"},
+      {:comeonin, "~> 4.0.3"},
       {:cowboy, "~> 1.1.2"},
       {:ex_spec, "~> 2.0.1", only: :test},
       {:floki, "~> 0.19", only: :test},
